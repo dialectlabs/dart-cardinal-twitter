@@ -13,3 +13,11 @@ final Ed25519HDPublicKey DEFAULT_PUBKEY =
     Ed25519HDPublicKey.fromBase58("11111111111111111111111111111111");
 final Ed25519HDPublicKey NAMESPACES_PROGRAM_ID = Ed25519HDPublicKey.fromBase58(
     "nameXpT2PwZ2iA6DTNYTotTmiMYusBCYqwBLN2QgF4w");
+
+final Map<SolanaEnvironment, String> urlMap = {
+  SolanaEnvironment.localnet: "http://127.0.0.1:8899",
+  SolanaEnvironment.devnet: "https://api.devnet.solana.com",
+  SolanaEnvironment.mainnet: "https://api.mainnet-beta.solana.com",
+};
+
+enum SolanaEnvironment { localnet, devnet, mainnet }
