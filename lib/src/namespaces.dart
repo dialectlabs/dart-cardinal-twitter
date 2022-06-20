@@ -95,12 +95,12 @@ Future<List<NameEntryResult>> getNameEntriesForNamespace(
   return results;
 }
 
-Future<ad.AccountData<EntryData>> getNameEntry(
-    RpcClient client, String namespaceName, String entryName) async {
+Future<ad.AccountData<EntryData>> getNameEntry(SolanaEnvironment environment,
+    String namespaceName, String entryName) async {
   final namespaceResult = await findNamespaceId(namespaceName);
   final nameEntryResult =
       await findNameEntryId(namespaceResult.publicKey, entryName);
-  final account = await client.getAccountInfo(
+  final account = await RpcClient(urlMap[environment]!).getAccountInfo(
       nameEntryResult.publicKey.toBase58(),
       encoding: Encoding.base64);
   final parsed = parseBytesFromAccount(account, EntryData.fromBorsh);
@@ -139,9 +139,9 @@ Future<ad.AccountData<ReverseEntryData>> getReverseEntry(RpcClient client,
   }
 }
 
-Future<String> nameForDisplay(RpcClient client, Ed25519HDPublicKey namespace,
-    Ed25519HDPublicKey pubKey) async {
-  final name = await tryGetName(client, namespace, pubKey);
+Future<String> nameForDisplay(SolanaEnvironment environment,
+    Ed25519HDPublicKey namespace, Ed25519HDPublicKey pubKey) async {
+  final name = await tryGetName(environment, namespace, pubKey);
   return name ?? displayAddress(address: pubKey.toBase58());
 }
 
@@ -149,10 +149,11 @@ String shortenAddress({required String address, int chars = 5}) {
   return "${address.substring(0, chars)}...${address.substring(address.length - chars)}";
 }
 
-Future<String?> tryGetName(RpcClient client, Ed25519HDPublicKey namespace,
-    Ed25519HDPublicKey publicKey) async {
+Future<String?> tryGetName(SolanaEnvironment environment,
+    Ed25519HDPublicKey namespace, Ed25519HDPublicKey publicKey) async {
   try {
-    final reverseEntry = await getReverseEntry(client, namespace, publicKey);
+    final reverseEntry = await getReverseEntry(
+        RpcClient(urlMap[environment]!), namespace, publicKey);
     return formatName(
         reverseEntry.parsed.namespaceName, reverseEntry.parsed.entryName);
   } catch (e) {
@@ -161,10 +162,13 @@ Future<String?> tryGetName(RpcClient client, Ed25519HDPublicKey namespace,
   return null;
 }
 
-Future<ad.AccountData<ReverseEntryData>?> tryGetReverseEntry(RpcClient client,
-    Ed25519HDPublicKey namespace, Ed25519HDPublicKey publicKey) async {
+Future<ad.AccountData<ReverseEntryData>?> tryGetReverseEntry(
+    SolanaEnvironment environment,
+    Ed25519HDPublicKey namespace,
+    Ed25519HDPublicKey publicKey) async {
   try {
-    return await getReverseEntry(client, namespace, publicKey);
+    return await getReverseEntry(
+        RpcClient(urlMap[environment]!), namespace, publicKey);
   } catch (e) {
     return null;
   }

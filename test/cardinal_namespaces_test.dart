@@ -4,13 +4,12 @@ import 'package:solana/solana.dart';
 
 void main() {
   group('Cardinal twitter service', () {
-    const baseUrl = "https://api.mainnet-beta.solana.com";
-    print("testing with URL: $baseUrl");
-    final client = RpcClient(baseUrl);
+    const environment = SolanaEnvironment.mainnet;
+    print("testing with URL: ${urlMap[environment]}");
 
     test('test get name fail', () async {
       final displayName =
-          await tryGetName(client, NAMESPACES_PROGRAM_ID, DEFAULT_PUBKEY);
+          await tryGetName(environment, NAMESPACES_PROGRAM_ID, DEFAULT_PUBKEY);
       expect(displayName, equals(null));
     });
 
@@ -19,7 +18,7 @@ void main() {
       final pubKey = Ed25519HDPublicKey.fromBase58(
           "D1ALECTfeCZt9bAbPWtJk7ntv24vDYGPmyS7swp7DY5h");
 
-      final key = await getNameEntry(client, twitterNamespace, handle);
+      final key = await getNameEntry(environment, twitterNamespace, handle);
       expect(key.parsed.data, equals(pubKey));
     });
 
@@ -29,7 +28,7 @@ void main() {
           "D1ALECTfeCZt9bAbPWtJk7ntv24vDYGPmyS7swp7DY5h");
 
       final displayName =
-          await tryGetName(client, NAMESPACES_PROGRAM_ID, pubKey);
+          await tryGetName(environment, NAMESPACES_PROGRAM_ID, pubKey);
       expect(displayName, equals("@$handle"));
     });
   });

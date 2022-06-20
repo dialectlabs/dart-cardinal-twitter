@@ -1,6 +1,6 @@
 name: cardinal_namespaces
 description: A dart implementation of Cardinal's decentralized utility layer built on Solana.
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/dialectlabs/dart-solana-name-service
 repository: https://github.com/dialectlabs/dart-solana-name-service
 
